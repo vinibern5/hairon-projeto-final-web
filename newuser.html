@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+</head>
+
+<style type="text/css">
+    .container {
+        margin-top: 80px;
+    }
+    
+    h3 {
+        padding: 7px;
+        margin: 5px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+    
+    .login {
+        background-color: #1e88e5;
+        border-collapse: collapse;
+        color: white;
+    }
+    
+    .row {
+        margin-bottom: 0px;
+    }
+    
+    form {
+        margin-top: 15px;
+    }
+    
+    .form {
+        background: white;
+    }
+    
+    button {
+        float: right;
+        margin-right: 3%;
+        margin-bottom: 5%;
+        margin-top: 5%;
+    }
+    
+    .redirects {
+        background-color: white;
+    }
+    
+    hr {
+        margin: 0px -12px;
+        opacity: 0.2;
+    }
+    
+    .esqueci {
+        float: left;
+    }
+    
+    .novo {
+        float: right;
+    }
+    
+    a {
+        padding: 1.5%;
+    }
+</style>
+
+<body class="grey lighten-4">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m6 offset-m3 login z-depth-1">
+                <h3>Cadastro</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m6 offset-m3 form z-depth-1">
+                <form method="POST" action="cadastro.php">
+                    <div class="input-field">
+                        <input class="validate" type="text" name="login" required id="login">
+                        <label for="login">Login</label>
+                        <span class="helper-text" data-error="Login deve ser preenchido!" id="helper-login"></span>
+                    </div>
+
+                    <div class="input-field">
+                        <input class="validate" type="password" name="senha" required id="password">
+                        <label for="password">Senha</label>
+                        <span class="helper-text" data-error="Senha deve ser preenchida!" id="helper-senha"></span>
+                    </div>
+
+                    <div class="input-field">
+                        <input class="validate" type="email" name="email" required id="email">
+                        <label for="email">Email</label>
+                        <span class="helper-text" data-error="O email deve ser preenchido e válido!" id="helper-email"></span>
+                    </div>
+
+                    <div class="input-field">
+                        <input class="validate" type="text" name="perguntasec" required id="perguntasec">
+                        <label for="perguntasec">Pergunta Secreta</label>
+                        <span class="helper-text" data-error="A pergunta secreta deve ser preenchida!" id="helper-pergunta"></span>
+                    </div>
+
+                    <div class="input-field">
+                        <input class="validate" type="text" name="resposta" required id="resposta">
+                        <label for="resposta">Resposta</label>
+                        <span class="helper-text" data-error="A resposta deve ser preenchido!" id="helper-resposta"></span>
+                    </div>
+
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Criar nova conta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    $("#login").on("change", function() {
+        $("#helper-login").attr("data-error", "Login deve ser preenchido!")
+
+        var inputElement = this;
+
+        if (!this.validity.valueMissing) {
+            $.ajax({
+                type: "GET",
+                url: "checklogin.php",
+                data: {
+                    login: inputElement.value
+                },
+                success: function(data) {
+                    var loginExists = (data === 'true');
+
+                    if (!loginExists) {
+                        $(inputElement).removeClass("invalid");
+                        inputElement.setCustomValidity("");
+                    } else {
+                        $(inputElement).addClass("invalid");
+                        $("#helper-login").attr("data-error", "Login já existe!")
+                        inputElement.setCustomValidity("Login já existe!");
+                    }
+                }
+            });
+        }
+    });
+
+    $("#email").on("change", function() {
+        $("#helper-email").attr("data-error", "O email deve ser preenchido e válido!")
+        var inputElement = this;
+
+        if (!this.validity.valueMissing && !this.validity.typeMismatch) {
+            $.ajax({
+                type: "GET",
+                url: "checkemail.php",
+                data: {
+                    email: inputElement.value
+                },
+                success: function(data) {
+                    var emailExists = (data === 'true');
+
+                    if (!emailExists) {
+                        $(inputElement).removeClass("invalid");
+                        inputElement.setCustomValidity("");
+                    } else {
+                        $(inputElement).addClass("invalid");
+                        $("#helper-email").attr("data-error", "O email informado já existe!")
+                        inputElement.setCustomValidity("O email informado já existe!");
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+</html>
